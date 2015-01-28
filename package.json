@@ -1,0 +1,23 @@
+{
+  "name": "drag-n-drop-proto",
+  "version": "0.0.0",
+  "description": "This is an example prototype for ads' creative creation using drag and drop approach. Part of facebook.aitarget.ru tool.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yuriMalakhov/drag-n-drop-proto.git"
+  },
+  "author": "Юрий Малахов <yuri.malakhov87@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yuriMalakhov/drag-n-drop-proto/issues"
+  },
+  "homepage": "https://github.com/yuriMalakhov/drag-n-drop-proto",
+  "devDependencies": {
+    "browser-sync": "^1.9.1",
+    "gulp": "^3.8.10"
+  }
+}

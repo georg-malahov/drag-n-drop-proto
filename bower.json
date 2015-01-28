@@ -1,0 +1,23 @@
+{
+  "name": "drag-n-drop-proto",
+  "version": "0.0.0",
+  "homepage": "https://github.com/yuriMalakhov/drag-n-drop-proto",
+  "authors": [
+    "Юрий Малахов <yuri.malakhov87@gmail.com>"
+  ],
+  "description": "This is an example prototype for ads' creative creation using drag and drop approach. Part of facebook.aitarget.ru tool.",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Sortable": "~1.0.1",
+    "angular": "~1.3.11",
+    "ng-file-upload": "~2.2.2"
+  }
+}

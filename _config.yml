@@ -1,0 +1,14 @@
+# Site settings
+title: Drag-N-Drop Proto
+ngAppName: app
+exclude:
+  - "package.json"
+  - "node_modules"
+  - "bower.json"
+  - "gulpfile.js"
+  - "*.less"
+  - "*.jade"
+email: yuri.malakhov87@gmail.com
+description: "Drag-n-drop-proto : This is an example prototype for ads creative creation using drag and drop approach. Part of facebook.aitarget.ru tool."
+baseurl: ""
+url: ""

@@ -1,0 +1,25 @@
+@import "variables";
+.header {
+	display: 						block;
+	text-align: 				left;
+	font-size: 					1.3rem;
+	width: 							100%;
+	background-color: 	@header-background-color;
+	.box-shadow();
+	h1, h2 {
+		margin: 					0;
+	}
+	h2 {
+		margin-top: 			5px;
+	}
+}
+.header_inner {
+	position: 	relative;
+	width: 			@content-width-base;
+	margin: 		0 auto;
+	padding: 		@header-inner-padding;
+}
+.header_project-link {
+	position: absolute;
+	right: 		@padding-base-horizontal;
+}
