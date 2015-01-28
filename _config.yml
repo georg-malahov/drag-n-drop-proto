@@ -6,6 +6,7 @@ exclude:
   - "node_modules"
   - "bower.json"
   - "gulpfile.js"
+  - "*.coffee"
   - "*.less"
   - "*.jade"
 email: yuri.malakhov87@gmail.com

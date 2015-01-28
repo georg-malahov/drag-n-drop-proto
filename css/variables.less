@@ -30,11 +30,23 @@
 @block-margin-vertical:     	15px;
 @block-margin-horizontal:   	15px;
 @block-margin:								@block-margin-vertical @block-margin-horizontal;
+//Crud blocks
+@crud-step-padding-vertical: 					10px;
+@crud-step-padding-horizontal: 				25px;
+@crud-step-padding: 									@crud-step-padding-vertical @crud-step-padding-horizontal;
+@crud-step-block-margin-vertical: 		15px;
+@crud-step-block-margin-horizontal: 	0;
+@crud-step-block-margin: 							@crud-step-block-margin-vertical @crud-step-block-margin-horizontal;
 //Mixins
 .box-shadow(@y: 1px; @opacity: .15) {
 	-webkit-box-shadow: 0px @y 1px 0px rgba(0, 0, 0, @opacity);
 	-moz-box-shadow:    0px @y 1px 0px rgba(0, 0, 0, @opacity);
 	box-shadow:         0px @y 1px 0px rgba(0, 0, 0, @opacity);
+}
+.box-shadow-crud(@opacity: .15) {
+	-webkit-box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, @opacity);
+	-moz-box-shadow:    1px 1px 1px 0px rgba(0, 0, 0, @opacity);
+	box-shadow:         1px 1px 1px 0px rgba(0, 0, 0, @opacity);
 }
 .clearfix() {
 	&:before,

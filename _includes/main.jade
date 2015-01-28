@@ -1,3 +1,5 @@
 div(class="content")
   div(class="content_inner")
-    p The fastest way to create ads creatives.
+    div(class="creatives", ng-controller="CreativesController")
+      include creatives_draggables
+      include creatives_ads
