@@ -16,7 +16,7 @@ gulp.task('sync', function() {
 		logLevel: 'debug',
 		minify: false,
 		codeSync: true,
-		reloadDelay: 1000,
+		reloadDelay: 500,
 		proxy: "localhost:4000"
 	};
 

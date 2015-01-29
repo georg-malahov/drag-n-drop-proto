@@ -6,9 +6,16 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
   }
 ]).controller('CreativesController', [
   '$scope', '$upload', function($scope, $upload) {
-    $scope.images = [];
-    $scope.headers = ['super bla-bla-bla header', 'you can frop here a text file with ";" as separator', 'Or you can Drag here selected column from excel'];
-    $scope.texts = ['A am a bla-bla-bla text', 'you can frop here a text file with ";" as separator', 'Or you can Drag here selected column from excel'];
+    var processItem, strings;
+    $scope.activeTab = "images";
+    $scope.imageResults = [];
+    $scope.headlineResults = [];
+    $scope.textResults = [];
+    $scope.files = [];
+    $scope.readyAds = [];
+    $scope.images = ['img/image1.jpeg', 'img/image2.jpeg', 'img/image3.jpeg', 'img/image4.jpeg'];
+    $scope.headers = ['Header header header header', 'You can drop here a text file with ";" as separator', 'Or you can Drag here selected text from any text editors (strings should be separated with ; or start by new line)'];
+    $scope.texts = ['Text text text text text', 'You can drop here a text file with ";" as separator', 'Or you can Drag here selected text from any text editors (strings should be separated with ; or start by new line)'];
     $scope.imagesSortable = {
       group: {
         name: 'imagesSortable',
@@ -18,7 +25,7 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
       ghostClass: "creatives_image-drag-ghost",
       animation: 150
     };
-    $scope.headlineStrings = {
+    strings = {
       group: {
         name: 'headlineStrings',
         pull: 'clone',
@@ -28,16 +35,14 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
       ghostClass: "creatives_string-drag-ghost",
       animation: 150
     };
-    $scope.textStrings = {
+    $scope.headlineStrings = angular.extend({}, strings);
+    $scope.textStrings = angular.extend({}, strings, {
       group: {
         name: 'textStrings',
         pull: 'clone',
         put: true
-      },
-      handle: ".creatives_string-drag-handle",
-      ghostClass: "creatives_string-drag-ghost",
-      animation: 150
-    };
+      }
+    });
     $scope.imagesSortableTarget = {
       group: {
         name: 'imagesSortableTarget',
@@ -60,67 +65,47 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
       }
     };
     $scope.constructed = {
-      img: "",
+      image: "",
       headline: "",
       text: ""
     };
-    $scope.resImages = [];
-    $scope.resHeadlines = [];
-    $scope.resTexts = [];
-    $scope.files = [];
-    $scope.$watch('resHeadlines', function(newVal, oldVal) {
+    processItem = function(name, newVal, oldVal) {
       if (angular.equals(newVal, oldVal)) {
         return;
       }
-      console.log("New resHeadlines: ", newVal);
-      $scope.constructed.headline = newVal.splice(-1)[0];
-      if ($scope.constructed.headline) {
-        return $scope.resHeadlines = [$scope.constructed.headline];
-      }
+      return angular.forEach(newVal, function(val) {
+        if (oldVal.indexOf(val) === -1) {
+          $scope.constructed[name] = val;
+          if ($scope.constructed[name]) {
+            return $scope[name + 'Results'] = [$scope.constructed[name]];
+          }
+        }
+      });
+    };
+    $scope.$watch('headlineResults', function(newVal, oldVal) {
+      return processItem('headline', newVal, oldVal);
     }, true);
-    $scope.$watch('resTexts', function(newVal, oldVal) {
-      if (angular.equals(newVal, oldVal)) {
-        return;
-      }
-      console.log("New resTexts: ", newVal);
-      $scope.constructed.text = newVal.splice(-1)[0];
-      if ($scope.constructed.text) {
-        return $scope.resTexts = [$scope.constructed.text];
-      }
+    $scope.$watch('textResults', function(newVal, oldVal) {
+      return processItem('text', newVal, oldVal);
     }, true);
-    $scope.$watch('resImages', function(newVal, oldVal) {
-      if (angular.equals(newVal, oldVal)) {
-        return;
-      }
-      console.log("New resTexts: ", newVal);
-      $scope.constructed.img = newVal.splice(-1)[0];
-      if ($scope.constructed.img) {
-        return $scope.resImages = [$scope.constructed.img];
-      }
+    $scope.$watch('imageResults', function(newVal, oldVal) {
+      return processItem('image', newVal, oldVal);
     }, true);
     $scope.$watch('constructed', function(newVal, oldVal) {
       if (angular.equals(newVal, oldVal)) {
         return;
       }
-      return console.log("New resconstructed: ", newVal);
+      if (newVal.image && newVal.headline && newVal.text) {
+        $scope.readyAds.unshift(angular.extend({}, newVal));
+        return console.log("New res ad constructed: ", newVal);
+      }
     }, true);
-    $scope.$watch('files', function(newVal, oldVal) {
+    return $scope.$watch('files', function(newVal, oldVal) {
       if (angular.equals(newVal, oldVal)) {
         return;
       }
-      $scope.$broadcast("processFiles", newVal);
-      return console.log("New files: ", newVal);
+      return $scope.$broadcast("processFiles", newVal);
     }, true);
-    $scope.$watch('images', function(newVal, oldVal) {
-      if (angular.equals(newVal, oldVal)) {
-        return;
-      }
-      return console.log("New images urls: ", newVal);
-    }, true);
-    $scope.fileDropped = function($files, $event, $rejectedFiles) {
-      return console.log("File dropped: ", arguments);
-    };
-    return $scope.activeTab = "images";
   }
 ]).directive('imgCenter', function() {
   return {
@@ -211,7 +196,7 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
   return {
     restrict: 'A',
     link: function(scope, elm) {
-      scope.$on("processFiles", function(e, files) {
+      return scope.$on("processFiles", function(e, files) {
         console.log("Should process these files: ", files);
         return angular.forEach(files, function(file) {
           var imageType, reader, textType;
@@ -220,7 +205,10 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
           reader = new FileReader();
           if (file.type.match(imageType)) {
             reader.onload = function(e) {
-              return scope[scope.activeTab].push(e.target.result);
+              scope.$apply(function() {
+                return scope[scope.activeTab].push(e.target.result);
+              });
+              return console.info("Result of upload: ", scope[scope.activeTab]);
             };
             reader.readAsDataURL(file);
           }
@@ -234,14 +222,6 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
           }
         });
       });
-      return elm[0].ondrop = function(e) {
-        var textData;
-        console.log("On Drop: ", e);
-        textData = event.dataTransfer.getData("Text");
-        if (textData) {
-          return scope[scope.activeTab] = textData.split("\n");
-        }
-      };
     }
   };
 }).directive('stringAdd', function() {
@@ -250,8 +230,13 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
     link: function(scope, elm, attrs) {
       scope.keyPress = function(name, string, e) {
         if (e.keyCode === 13) {
+          e.preventDefault();
           scope[name.slice(0, -1)] = void 0;
-          return scope[name].push(string);
+          if (string && string.indexOf(";")) {
+            return scope[name] = scope[name].concat(string.split(";"));
+          } else {
+            return scope[name] = scope[name].concat(string.split("\n"));
+          }
         }
       };
       return scope.onBlur = function(item, e) {};

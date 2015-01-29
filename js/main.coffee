@@ -3,86 +3,71 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
     $interpolateProvider.startSymbol('[[')
     $interpolateProvider.endSymbol(']]')
 ]).controller('CreativesController', ['$scope', '$upload', ($scope, $upload) ->
-  $scope.images = []
+  $scope.activeTab = "images"
+  $scope.imageResults = []
+  $scope.headlineResults = []
+  $scope.textResults = []
+  $scope.files = []
+  $scope.readyAds = []
+  $scope.images = [
+    'img/image1.jpeg'
+    'img/image2.jpeg'
+    'img/image3.jpeg'
+    'img/image4.jpeg'
+  ]
   $scope.headers = [
-    'super bla-bla-bla header',
-    'you can frop here a text file with ";" as separator',
-    'Or you can Drag here selected column from excel'
+    'Header header header header',
+    'You can drop here a text file with ";" as separator',
+    'Or you can Drag here selected text from any text editors (strings should be separated with ; or start by new line)'
   ]
   $scope.texts = [
-    'A am a bla-bla-bla text',
-    'you can frop here a text file with ";" as separator',
-    'Or you can Drag here selected column from excel'
+    'Text text text text text',
+    'You can drop here a text file with ";" as separator',
+    'Or you can Drag here selected text from any text editors (strings should be separated with ; or start by new line)'
   ]
   $scope.imagesSortable = {
     group: {name: 'imagesSortable', pull: 'clone', put: true}
     ghostClass: "creatives_image-drag-ghost"
     animation: 150
   }
-  $scope.headlineStrings = {
+  strings = {
     group: {name: 'headlineStrings', pull: 'clone', put: true}
     handle: ".creatives_string-drag-handle"
     ghostClass: "creatives_string-drag-ghost"
     animation: 150
   }
-  $scope.textStrings = {
-    group: {name: 'textStrings', pull: 'clone', put: true}
-    handle: ".creatives_string-drag-handle"
-    ghostClass: "creatives_string-drag-ghost"
-    animation: 150
-  }
-  $scope.imagesSortableTarget = {
-    group: {name: 'imagesSortableTarget', put: ['imagesSortable'], pull: false}
-  }
-  $scope.headlineStringsTarget = {
-    group: {name: 'headlineStringsTarget', put: ['headlineStrings'], pull: false}
-  }
-  $scope.textStringsTarget = {
-    group: {name: 'textStringsTarget', put: ['textStrings'], pull: false}
-  }
-  $scope.constructed = {
-    img: ""
-    headline: ""
-    text: ""
-  }
-  $scope.resImages = []
-  $scope.resHeadlines = []
-  $scope.resTexts = []
-  $scope.files = []
-  $scope.$watch('resHeadlines', (newVal, oldVal) ->
+  $scope.headlineStrings = angular.extend({}, strings)
+  $scope.textStrings = angular.extend({}, strings, {group: {name: 'textStrings', pull: 'clone', put: true}})
+  $scope.imagesSortableTarget = {group: {name: 'imagesSortableTarget', put: ['imagesSortable'], pull: false}}
+  $scope.headlineStringsTarget = {group: {name: 'headlineStringsTarget', put: ['headlineStrings'], pull: false}}
+  $scope.textStringsTarget = {group: {name: 'textStringsTarget', put: ['textStrings'], pull: false}}
+  $scope.constructed = { image: "", headline: "", text: "" }
+  processItem = (name, newVal, oldVal) ->
     return if angular.equals(newVal, oldVal)
-    console.log("New resHeadlines: ", newVal)
-    $scope.constructed.headline = newVal.splice(-1)[0]
-    $scope.resHeadlines = [$scope.constructed.headline] if $scope.constructed.headline
+    angular.forEach(newVal, (val) ->
+      if oldVal.indexOf(val) is -1
+        $scope.constructed[name] = val
+        $scope[name + 'Results'] = [$scope.constructed[name]] if $scope.constructed[name]
+    )
+  $scope.$watch('headlineResults', (newVal, oldVal) ->
+    processItem('headline', newVal, oldVal)
   , true)
-  $scope.$watch('resTexts', (newVal, oldVal) ->
-    return if angular.equals(newVal, oldVal)
-    console.log("New resTexts: ", newVal)
-    $scope.constructed.text = newVal.splice(-1)[0]
-    $scope.resTexts = [$scope.constructed.text] if $scope.constructed.text
+  $scope.$watch('textResults', (newVal, oldVal) ->
+    processItem('text', newVal, oldVal)
   , true)
-  $scope.$watch('resImages', (newVal, oldVal) ->
-    return if angular.equals(newVal, oldVal)
-    console.log("New resTexts: ", newVal)
-    $scope.constructed.img = newVal.splice(-1)[0]
-    $scope.resImages = [$scope.constructed.img] if $scope.constructed.img
+  $scope.$watch('imageResults', (newVal, oldVal) ->
+    processItem('image', newVal, oldVal)
   , true)
   $scope.$watch('constructed', (newVal, oldVal) ->
     return if angular.equals(newVal, oldVal)
-    console.log("New resconstructed: ", newVal)
+    if newVal.image and newVal.headline and newVal.text
+      $scope.readyAds.unshift(angular.extend({}, newVal))
+      console.log("New res ad constructed: ", newVal)
   , true)
   $scope.$watch('files', (newVal, oldVal) ->
     return if angular.equals(newVal, oldVal)
     $scope.$broadcast("processFiles", newVal)
-    console.log("New files: ", newVal)
   , true)
-  $scope.$watch('images', (newVal, oldVal) ->
-    return if angular.equals(newVal, oldVal)
-    console.log("New images urls: ", newVal)
-  , true)
-  $scope.fileDropped = ($files, $event, $rejectedFiles) ->
-    console.log("File dropped: ", arguments)
-  $scope.activeTab = "images"
 ]).directive('imgCenter', () ->
   {
   scope: {imgCenter: '=', height: "=", width: "="}
@@ -160,7 +145,10 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
         reader = new FileReader()
         if file.type.match(imageType)
           reader.onload = (e) ->
-            scope[scope.activeTab].push(e.target.result)
+            scope.$apply(->
+              scope[scope.activeTab].push(e.target.result)
+            )
+            console.info("Result of upload: ", scope[scope.activeTab])
           reader.readAsDataURL(file)
         if file.type.match(textType)
           reader.onload = (e) ->
@@ -169,10 +157,10 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
           reader.readAsText(file)
       )
     )
-    elm[0].ondrop = (e) ->
-      console.log("On Drop: ", e)
-      textData = event.dataTransfer.getData ("Text")
-      scope[scope.activeTab] = textData.split("\n") if textData
+#    elm[0].ondrop = (e) ->
+#      console.log("On Drop: ", e)
+#      textData = event.dataTransfer.getData ("Text")
+#      scope[scope.activeTab] = textData.split("\n") if textData
   }
 ).directive('stringAdd', () ->
   {
@@ -180,8 +168,12 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
   link: (scope, elm, attrs) ->
     scope.keyPress = (name, string, e) ->
       if e.keyCode is 13
+        e.preventDefault()
         scope[name.slice(0, -1)] = undefined
-        scope[name].push(string)
+        if string and string.indexOf(";")
+          scope[name] = scope[name].concat(string.split(";"))
+        else
+          scope[name] = scope[name].concat(string.split("\n"))
     scope.onBlur = (item, e) ->
       return
   }

@@ -17,8 +17,77 @@
 	border-right: 2px solid #d6d6d6;
 }
 .creatives_ready-ads {
-	float: 		right;
-	width: 		60%;
+	float: 			right;
+	width: 			70%;
+	overflow: 	hidden;
+	overflow-x: auto;
+	&.creatives_ready-ads-empty:before {
+		content: 		"";
+		background: url("../img/arrow.png");
+		width: 			160px;
+		height: 		160px;
+		position: 	absolute;
+		top: 				50%;
+		margin-top: -80px;
+		left: 			50%;
+		margin-left: -80px;
+	}
+}
+.creatives_ready-ads-inner {
+	position: 	relative;
+	overflow: hidden;
+	display: 		inline-block;
+	min-height: 100%;
+	width: 			auto;
+	height: 		100%;
+	white-space: nowrap;
+}
+.creatives_ready-ad {
+	position: 				relative;
+	display: 					inline-block;
+	width: 						@content-width-base * 0.6 / 3;
+	height: 					100%;
+	padding: 					5px;
+	vertical-align: 	top;
+	&:hover {
+		.creatives_item-remove {
+			display: 			inline-block;
+			top: 					0px;
+			right: 				0px;
+			z-index: 			1;
+		}
+	}
+}
+.creatives_ready-ad-inner {
+	position: 				relative;
+	border: 					1px solid #d6d6d6;
+	border-radius: 		3px;
+	height: 					100%;
+	white-space: 			normal;
+	padding: 					24px 5px 5px 5px;
+	overflow: 				hidden;
+	.box-shadow-crud();
+	.creatives_ready-ad-preview {
+		position: 			absolute;
+		top: 						0;
+		left: 					5px;
+		cursor: 				pointer;
+	}
+	.creatives_ready-ad-image {
+		width: 					auto;
+		max-width: 			100%;
+		height: 				150px;
+	}
+	.creatives_ready-ad-headline {
+		margin-top: 		15px;
+		padding: 				0 10px;
+		text-align: 		center;
+		font-weight: 		600;
+	}
+	.creatives_ready-ad-text {
+		margin-top: 		15px;
+		padding: 				0 10px;
+	}
 }
 .creatives_constructor-title {
 	text-align: 			center;
@@ -31,13 +100,15 @@
 	text-align: 			center;
 	margin-bottom: 		10px;
 	.creatives_string-drag-ghost {
-		position: 				absolute;
+		display: 					block;
+		position: 				absolute!important;
 		top: 							0;
 		bottom: 					0;
 		left: 						0;
 		right: 						0;
 		background-color: #fff;
 		width: 						100%;
+		z-index: 					10;
 	}
 }
 .creatives_constructor-elm:last-child {
@@ -68,13 +139,13 @@
 	overflow: 				hidden;
 	.creatives_image-drag-ghost {
 		display: 					block;
-		position: 				absolute;
+		position: 				absolute!important;
 		text-align: 			left;
 		top: 							0;
 		bottom: 					0;
 		left: 						0;
 		right: 						0;
-		opacity: 					1;
+		opacity: 					.8;
 		width: 						100%;
 		z-index: 					10;
 	}
