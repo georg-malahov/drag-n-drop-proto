@@ -14,8 +14,8 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
     $scope.files = [];
     $scope.readyAds = [];
     $scope.images = ['img/image1.jpeg', 'img/image2.jpeg', 'img/image3.jpeg', 'img/image4.jpeg'];
-    $scope.headers = ['Header header header header', 'You can drop here a text file with ";" as separator', 'Or you can Drag here selected text from any text editors (strings should be separated with ; or start by new line)'];
-    $scope.texts = ['Text text text text text', 'You can drop here a text file with ";" as separator', 'Or you can Drag here selected text from any text editors (strings should be separated with ; or start by new line)'];
+    $scope.headers = ['Header header header header', 'You can drop here a text file with ";" as separator', 'Or you can Drag here selected text from any text editors (strings should be separated by \';\')'];
+    $scope.texts = ['Text text text text text', 'You can drop here a text file with ";" as separator', 'Or you can Drag here selected text from any text editors (strings should be separated by \';\')'];
     $scope.imagesSortable = {
       group: {
         name: 'imagesSortable',

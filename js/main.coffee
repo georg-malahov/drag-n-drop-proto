@@ -18,12 +18,12 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
   $scope.headers = [
     'Header header header header',
     'You can drop here a text file with ";" as separator',
-    'Or you can Drag here selected text from any text editors (strings should be separated with ; or start by new line)'
+    'Or you can Drag here selected text from any text editors (strings should be separated by \';\')'
   ]
   $scope.texts = [
     'Text text text text text',
     'You can drop here a text file with ";" as separator',
-    'Or you can Drag here selected text from any text editors (strings should be separated with ; or start by new line)'
+    'Or you can Drag here selected text from any text editors (strings should be separated by \';\')'
   ]
   $scope.imagesSortable = {
     group: {name: 'imagesSortable', pull: 'clone', put: true}
