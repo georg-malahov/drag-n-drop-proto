@@ -29,7 +29,7 @@ div(class="creatives_draggables")
       div(class="creatives_images", ng-sortable="imagesSortable")
         div(class="creatives_image",
           ng-repeat="src in images")
-          div(class="creatives_image-wrapper", img-center="src", width="200", height="200")
+          div(class="creatives_image-wrapper", img-center="src")
           span(class="creatives_item-remove", ng-click="images.splice($index, 1)")
             span &times;
     div(class="creatives_strings_header-tab", ng-show="activeTab == 'headers'")

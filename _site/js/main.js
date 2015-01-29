@@ -138,17 +138,17 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
             jQuery(image).css({
               "position": "absolute",
               "height": "auto",
-              "width": "" + scope.width + "px",
-              "margin-top": -height * scope.width / width / 2 + "px",
+              "width": "" + (elm.parent().width()) + "px",
+              "margin-top": -height * elm.parent().width() / width / 2 + "px",
               "top": "50%",
               "left": "0"
             });
           } else {
             jQuery(image).css({
               "position": "absolute",
-              "height": "" + scope.height + "px",
+              "height": "" + (elm.parent().height()) + "px",
               "width": "auto",
-              "margin-left": -width * scope.height / height / 2 + "px",
+              "margin-left": -width * elm.parent().height() / height / 2 + "px",
               "left": "50%",
               "top": "0"
             });
