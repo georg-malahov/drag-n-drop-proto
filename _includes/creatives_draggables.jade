@@ -16,14 +16,30 @@ div(class="creatives_draggables")
       span(class="creatives_tab-title") Texts
       span(class="creatives_tab-question")
         span ?
-  div(class="creatives_tabs-content")
-    div(class="creatives_images", ng-show="activeTab == 'images'") Images
+  div(class="creatives_tabs-content",
+    process-files,
+    ng-file-drop, ng-model="files",
+    drag-over-class="creatives_tabs-content__dragover", multiple="true",
+    accept="*",
+    ng-file-change="fileDropped($files, $event, $rejectedFiles)",
+    hide-on-drop-not-available="false",
+    allow-dir="true")
+    div(class="creatives_images", ng-show="activeTab == 'images'", ng-sortable="imagesSortable")
+      div(class="creatives_image",
+        img-center="src",
+        ng-repeat="src in images", width="200", height="200")
     div(class="creatives_strings creatives_strings__headers", ng-show="activeTab == 'headers'", ng-sortable="headlineStrings")
+      //div(class="creatives_string creatives_strings_header-input")
+      //  textarea(rows="2", type="text", string-add, ng-blur="onBlur(header, $event)", ng-change="onChange(header)",
+      //    ng-model="header", name="headers", auto-focus="true", ng-keypress="keyPress('headers', header, $event)")
       div(class="creatives_string creatives_strings_header", ng-repeat="header in headers")
         div(class="creatives_string-inner")
           span(class="creatives_string-drag-handle") ☰
           span [[header]]
     div(class="creatives_strings creatives_strings__texts", ng-show="activeTab == 'texts'", ng-sortable="textStrings")
+      //div(class="creatives_string creatives_strings_text-input")
+      //  textarea(rows="2", type="text", string-add, ng-blur="onBlur(text, $event)", ng-change="onChange(text)",
+      //    ng-model="text", name="texts", auto-focus="true", ng-keypress="keyPress('texts', text, $event)")
       div(class="creatives_string creatives_strings_text", ng-repeat="text in texts")
         div(class="creatives_string-inner")
           span(class="creatives_string-drag-handle") ☰

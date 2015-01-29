@@ -59,12 +59,18 @@
   height: 215px;
   overflow: auto;
 }
-.creatives_strings {
+.creatives_tabs-content__dragover {
+  background-color: #fff081;
+}
+.creatives_strings,
+.creatives_images {
+  position: relative;
   font-size: 0;
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
 }
+.creatives_image,
 .creatives_string {
   position: relative;
   display: inline-block;
@@ -72,6 +78,15 @@
   padding: 5px;
   text-overflow: ellipsis;
   width: 33.3333%;
+}
+.creatives_image {
+  position: relative;
+  display: inline-block;
+  padding: 5px;
+  width: 20%;
+  height: 150px;
+  cursor: move;
+  cursor: -webkit-grabbing;
 }
 .creatives_string-inner {
   display: block;
@@ -90,5 +105,8 @@
   margin-right: 10px;
 }
 .creatives_string-drag-ghost .creatives_string-inner {
+  background-color: #fff081;
+}
+.creatives_image-drag-ghost {
   background-color: #fff081;
 }

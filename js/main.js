@@ -6,6 +6,18 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
   }
 ]).controller('CreativesController', [
   '$scope', '$upload', function($scope, $upload) {
+    $scope.images = [];
+    $scope.headers = ['super bla-bla-bla header', 'you can frop here a text file with ";" as separator', 'Or you can Drag here selected column from excel'];
+    $scope.texts = ['A am a bla-bla-bla text', 'you can frop here a text file with ";" as separator', 'Or you can Drag here selected column from excel'];
+    $scope.imagesSortable = {
+      group: {
+        name: 'imagesSortable',
+        pull: 'clone',
+        put: true
+      },
+      ghostClass: "creatives_image-drag-ghost",
+      animation: 150
+    };
     $scope.headlineStrings = {
       group: {
         name: 'headlineStrings',
@@ -26,6 +38,13 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
       ghostClass: "creatives_string-drag-ghost",
       animation: 150
     };
+    $scope.imagesSortableTarget = {
+      group: {
+        name: 'imagesSortableTarget',
+        put: ['imagesSortable'],
+        pull: false
+      }
+    };
     $scope.headlineStringsTarget = {
       group: {
         name: 'headlineStringsTarget',
@@ -45,8 +64,10 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
       headline: "",
       text: ""
     };
+    $scope.resImages = [];
     $scope.resHeadlines = [];
     $scope.resTexts = [];
+    $scope.files = [];
     $scope.$watch('resHeadlines', function(newVal, oldVal) {
       if (angular.equals(newVal, oldVal)) {
         return;
@@ -67,20 +88,96 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
         return $scope.resTexts = [$scope.constructed.text];
       }
     }, true);
+    $scope.$watch('resImages', function(newVal, oldVal) {
+      if (angular.equals(newVal, oldVal)) {
+        return;
+      }
+      console.log("New resTexts: ", newVal);
+      $scope.constructed.img = newVal.splice(-1)[0];
+      if ($scope.constructed.img) {
+        return $scope.resImages = [$scope.constructed.img];
+      }
+    }, true);
     $scope.$watch('constructed', function(newVal, oldVal) {
       if (angular.equals(newVal, oldVal)) {
         return;
       }
       return console.log("New resconstructed: ", newVal);
     }, true);
-    $scope.headers = ['super bla-bla header 1', 'super bla-bla header 2', 'super bla-bla header 3', 'super bla-bla header 4', 'super bla-bla header 5', 'super bla-bla header 6', 'super bla-bla header 7', 'super bla-bla header 8', 'super bla-bla header 9', 'super bla-bla header 10', 'super bla-bla header 11', 'super bla-bla header 12'];
-    $scope.texts = ['super bla-bla text 1', 'super bla-bla text 2', 'super bla-bla text 3', 'super bla-bla text 4', 'super bla-bla text 5', 'super bla-bla text 6'];
-    return $scope.activeTab = "headers";
+    $scope.$watch('files', function(newVal, oldVal) {
+      if (angular.equals(newVal, oldVal)) {
+        return;
+      }
+      $scope.$broadcast("processFiles", newVal);
+      return console.log("New files: ", newVal);
+    }, true);
+    $scope.$watch('images', function(newVal, oldVal) {
+      if (angular.equals(newVal, oldVal)) {
+        return;
+      }
+      return console.log("New images urls: ", newVal);
+    }, true);
+    $scope.fileDropped = function($files, $event, $rejectedFiles) {
+      return console.log("File dropped: ", arguments);
+    };
+    return $scope.activeTab = "images";
   }
 ]).directive('imgCenter', function() {
   return {
+    scope: {
+      imgCenter: '=',
+      height: "=",
+      width: "="
+    },
+    restrict: 'A',
+    link: function(scope, elm, attrs) {
+      return scope.$watch('imgCenter', function(newVal, oldVal) {
+        var image;
+        if (angular.isUndefined(newVal) && angular.equals(newVal, oldVal)) {
+          return;
+        }
+        image = new Image();
+        if (scope.imgCenter) {
+          image.src = scope.imgCenter;
+        }
+        elm.empty();
+        return image.onload = function() {
+          var height, width;
+          width = this.width;
+          height = this.height;
+          elm.css({
+            position: "relative"
+          });
+          jQuery(image).addClass(attrs["class"]);
+          if (width / height > 1) {
+            jQuery(image).css({
+              "position": "absolute",
+              "height": "auto",
+              "width": "" + scope.width + "px",
+              "margin-top": -height * scope.width / width / 2 + "px",
+              "top": "50%",
+              "left": "0"
+            });
+          } else {
+            jQuery(image).css({
+              "position": "absolute",
+              "height": "" + scope.height + "px",
+              "width": "auto",
+              "margin-left": -width * scope.height / height / 2 + "px",
+              "left": "50%",
+              "top": "0"
+            });
+          }
+          return jQuery(image).appendTo(elm);
+        };
+      }, true);
+    }
+  };
+}).directive('imgCenter2', function() {
+  return {
     restrict: 'A',
     link: function(scope, elm) {
+      console.log("imgCenter directive: ", arguments);
       return elm.load(function() {
         var height, width;
         width = this.naturalWidth;
@@ -108,6 +205,56 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
           });
         }
       });
+    }
+  };
+}).directive('processFiles', function() {
+  return {
+    restrict: 'A',
+    link: function(scope, elm) {
+      scope.$on("processFiles", function(e, files) {
+        console.log("Should process these files: ", files);
+        return angular.forEach(files, function(file) {
+          var imageType, reader, textType;
+          imageType = /image.*/;
+          textType = /text.*/;
+          reader = new FileReader();
+          if (file.type.match(imageType)) {
+            reader.onload = function(e) {
+              return scope[scope.activeTab].push(e.target.result);
+            };
+            reader.readAsDataURL(file);
+          }
+          if (file.type.match(textType)) {
+            reader.onload = function(e) {
+              var text;
+              text = e.target.result;
+              return scope[scope.activeTab] = text.split(";");
+            };
+            return reader.readAsText(file);
+          }
+        });
+      });
+      return elm[0].ondrop = function(e) {
+        var textData;
+        console.log("On Drop: ", e);
+        textData = event.dataTransfer.getData("Text");
+        if (textData) {
+          return scope[scope.activeTab] = textData.split("\n");
+        }
+      };
+    }
+  };
+}).directive('stringAdd', function() {
+  return {
+    restrict: 'A',
+    link: function(scope, elm, attrs) {
+      scope.keyPress = function(name, string, e) {
+        if (e.keyCode === 13) {
+          scope[name.slice(0, -1)] = void 0;
+          return scope[name].push(string);
+        }
+      };
+      return scope.onBlur = function(item, e) {};
     }
   };
 });

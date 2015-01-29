@@ -1,7 +1,9 @@
 div(class="creatives_ads")
   div(class="creatives_constructor")
     div(class="creatives_constructor-title") Drag items here
-    div(class="creatives_constructor-elm creatives_constructor-elm__image")
+    div(class="creatives_constructor-elm creatives_constructor-elm__image", ng-sortable="imagesSortableTarget")
+      div(class="creatives_constructor-elm__image-res", ng-repeat="src in resImages track by $index")
+        img(ng-src="[[src]]")
     div(class="creatives_constructor-elm creatives_constructor-elm__headline", ng-sortable="headlineStringsTarget")
       div(class="creatives_constructor-elm__string-res", ng-repeat="headline in resHeadlines track by $index")
         span [[headline]]
