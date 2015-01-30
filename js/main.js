@@ -107,92 +107,7 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
       return $scope.$broadcast("processFiles", newVal);
     }, true);
   }
-]).directive('imgCenter', function() {
-  return {
-    scope: {
-      imgCenter: '=',
-      height: "=",
-      width: "="
-    },
-    restrict: 'A',
-    link: function(scope, elm, attrs) {
-      return scope.$watch('imgCenter', function(newVal, oldVal) {
-        var image;
-        if (angular.isUndefined(newVal) && angular.equals(newVal, oldVal)) {
-          return;
-        }
-        image = new Image();
-        if (scope.imgCenter) {
-          image.src = scope.imgCenter;
-        }
-        elm.empty();
-        return image.onload = function() {
-          var height, width;
-          width = this.width;
-          height = this.height;
-          elm.css({
-            position: "relative"
-          });
-          jQuery(image).addClass(attrs["class"]);
-          if (width / height > 1) {
-            jQuery(image).css({
-              "position": "absolute",
-              "height": "auto",
-              "width": "" + (elm.parent().width()) + "px",
-              "margin-top": -height * elm.parent().width() / width / 2 + "px",
-              "top": "50%",
-              "left": "0"
-            });
-          } else {
-            jQuery(image).css({
-              "position": "absolute",
-              "height": "" + (elm.parent().height()) + "px",
-              "width": "auto",
-              "margin-left": -width * elm.parent().height() / height / 2 + "px",
-              "left": "50%",
-              "top": "0"
-            });
-          }
-          return jQuery(image).appendTo(elm);
-        };
-      }, true);
-    }
-  };
-}).directive('imgCenter2', function() {
-  return {
-    restrict: 'A',
-    link: function(scope, elm) {
-      console.log("imgCenter directive: ", arguments);
-      return elm.load(function() {
-        var height, width;
-        width = this.naturalWidth;
-        height = this.naturalHeight;
-        elm.parent().css({
-          position: "relative"
-        });
-        if (width / height > 1) {
-          return elm.css({
-            "position": "absolute",
-            "height": "auto",
-            "width": "" + (elm.parent().width()) + "px",
-            "margin-top": -height * elm.parent().width() / width / 2 + "px",
-            "top": "50%",
-            "left": "0"
-          });
-        } else {
-          return elm.css({
-            "position": "absolute",
-            "height": "" + (elm.parent().height()) + "px",
-            "width": "auto",
-            "margin-left": -width * elm.parent().height() / height / 2 + "px",
-            "left": "50%",
-            "top": "0"
-          });
-        }
-      });
-    }
-  };
-}).directive('processFiles', function() {
+]).directive('processFiles', function() {
   return {
     restrict: 'A',
     link: function(scope, elm) {
@@ -240,6 +155,39 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
         }
       };
       return scope.onBlur = function(item, e) {};
+    }
+  };
+}).directive('editable', function() {
+  return {
+    restrict: 'C',
+    scope: {
+      value: "="
+    },
+    compile: function(elm, attrs) {
+      var field;
+      field = jQuery("<textarea class='editable-field' ng-model='" + attrs.value + "'>");
+      elm.append(field);
+      return function(scope, elm, attrs) {
+        elm.find(".editable-field").css("padding", elm.css("padding"));
+        elm.find(".editable-field").css("text-align", elm.css("text-align"));
+        return elm.find(".editable-field").focus(function(e) {
+          var oldValue;
+          oldValue = jQuery(this).val();
+          return jQuery(this).keydown(function(e) {
+            if (e.keyCode === 13) {
+              e.preventDefault();
+              jQuery(this).blur();
+            }
+            if (e.keyCode === 27) {
+              e.preventDefault();
+              scope.$apply(function() {
+                return scope.value = oldValue;
+              });
+              return jQuery(this).blur();
+            }
+          });
+        });
+      };
     }
   };
 });

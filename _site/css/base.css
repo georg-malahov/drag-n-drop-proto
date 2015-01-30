@@ -16,3 +16,6 @@ body {
 body p {
   margin: 0;
 }
+body span {
+  display: inline-block;
+}

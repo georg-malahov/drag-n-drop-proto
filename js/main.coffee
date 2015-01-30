@@ -68,72 +68,7 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
     return if angular.equals(newVal, oldVal)
     $scope.$broadcast("processFiles", newVal)
   , true)
-]).directive('imgCenter', () ->
-  {
-  scope: {imgCenter: '=', height: "=", width: "="}
-  restrict: 'A'
-  link: (scope, elm, attrs) ->
-    scope.$watch('imgCenter', (newVal, oldVal) ->
-      return if angular.isUndefined(newVal) and angular.equals(newVal, oldVal)
-      image = new Image()
-      image.src = scope.imgCenter if scope.imgCenter
-      elm.empty()
-      image.onload = ->
-        width = this.width
-        height = this.height
-        elm.css({position: "relative"})
-        jQuery(image).addClass(attrs.class)
-        if width / height > 1
-          jQuery(image).css(
-            "position": "absolute"
-            "height": "auto"
-            "width": "#{elm.parent().width()}px"
-            "margin-top": -height * elm.parent().width() / width / 2 + "px"
-            "top": "50%"
-            "left": "0"
-          )
-        else
-          jQuery(image).css(
-            "position": "absolute"
-            "height": "#{elm.parent().height()}px"
-            "width": "auto"
-            "margin-left": -width * elm.parent().height() / height / 2 + "px"
-            "left": "50%"
-            "top": "0"
-          )
-        jQuery(image).appendTo(elm)
-    , true)
-  }
-).directive('imgCenter2', () ->
-  {
-  restrict: 'A'
-  link: (scope, elm) ->
-    console.log("imgCenter directive: ", arguments)
-    elm.load(->
-      width = this.naturalWidth
-      height = this.naturalHeight
-      elm.parent().css({position: "relative"})
-      if width / height > 1
-        elm.css(
-          "position": "absolute"
-          "height": "auto"
-          "width": "#{elm.parent().width()}px"
-          "margin-top": -height * elm.parent().width() / width / 2 + "px"
-          "top": "50%"
-          "left": "0"
-        )
-      else
-        elm.css(
-          "position": "absolute"
-          "height": "#{elm.parent().height()}px"
-          "width": "auto"
-          "margin-left": -width * elm.parent().height() / height / 2 + "px"
-          "left": "50%"
-          "top": "0"
-        )
-    )
-  }
-).directive('processFiles', () ->
+]).directive('processFiles', () ->
   {
   restrict: 'A'
   link: (scope, elm) ->
@@ -176,5 +111,30 @@ angular.module('app', ['angularFileUpload', 'ng-sortable']).config([
           scope[name] = scope[name].concat(string.split("\n"))
     scope.onBlur = (item, e) ->
       return
+  }
+).directive('editable', () ->
+  {
+  restrict: 'C'
+  scope: {value: "="}
+  compile: (elm, attrs) ->
+    field = jQuery("<textarea class='editable-field' ng-model='#{attrs.value}'>")
+    elm.append(field)
+    return (scope, elm, attrs) ->
+      elm.find(".editable-field").css("padding", elm.css("padding"))
+      elm.find(".editable-field").css("text-align", elm.css("text-align"))
+      elm.find(".editable-field").focus((e) ->
+        oldValue = jQuery(this).val()
+        jQuery(this).keydown((e) ->
+          if e.keyCode is 13
+            e.preventDefault()
+            jQuery(this).blur()
+          if e.keyCode is 27
+            e.preventDefault()
+            scope.$apply(->
+              scope.value = oldValue
+            )
+            jQuery(this).blur()
+        )
+      )
   }
 )

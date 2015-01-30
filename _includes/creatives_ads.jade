@@ -6,10 +6,10 @@ div(class="creatives_ads")
         img(ng-src="[[src]]")
     div(class="creatives_constructor-elm creatives_constructor-elm__headline", ng-sortable="headlineStringsTarget")
       div(class="creatives_constructor-elm__string-res", ng-repeat="headline in headlineResults track by $index")
-        span [[headline]]
+        span(class="editable" data-value="headline") [[headline]]
     div(class="creatives_constructor-elm creatives_constructor-elm__text", ng-sortable="textStringsTarget")
       div(class="creatives_constructor-elm__string-res", ng-repeat="text in textResults track by $index")
-        span [[text]]
+        span(class="editable" data-value="text") [[text]]
   div(class="creatives_ready-ads", ng-class="{'creatives_ready-ads-empty': !readyAds.length}")
     div(class="creatives_ready-ads-inner")
       div(class="creatives_ready-ad", ng-repeat="ad in readyAds track by $index")
@@ -19,5 +19,7 @@ div(class="creatives_ads")
           span(class="creatives_ready-ad-preview")
             img(src="img/view-icon.png")
           img(class="creatives_ready-ad-image", ng-src="[[ad.image]]")
-          p(class="creatives_ready-ad-headline", ng-bind="ad.headline")
-          p(class="creatives_ready-ad-text", ng-bind="ad.text")
+          p(class="creatives_ready-ad-headline")
+            span(class="editable", data-value="ad.headline") [[ad.headline]]
+          p(class="creatives_ready-ad-text")
+            span(class="editable", data-value="ad.text") [[ad.text]]

@@ -27,11 +27,12 @@ div(class="creatives_draggables")
     div(class="creatives_strings_header-tab", ng-show="activeTab == 'images'")
       button(class="creatives_image-button btn btn-success btn-sm", ng-file-select, ng-multiple="true", ng-model="files") Select Files
       div(class="creatives_images", ng-sortable="imagesSortable")
-        div(class="creatives_image",
+        div(class="creatives_image-wrapper",
           ng-repeat="src in images")
-          div(class="creatives_image-wrapper", img-center="src")
           span(class="creatives_item-remove", ng-click="images.splice($index, 1)")
             span &times;
+          div(class="creatives_image")
+            img(ng-src="[[src]]")
     div(class="creatives_strings_header-tab", ng-show="activeTab == 'headers'")
       div(class="creatives_string creatives_strings_header-input")
         textarea(rows="2", type="text", string-add, ng-blur="onBlur(header, $event)", ng-change="onChange(header)",
@@ -43,7 +44,7 @@ div(class="creatives_draggables")
             span(class="creatives_string-drag-handle") ☰
             span(class="creatives_item-remove", ng-click="headers.splice($index, 1)")
               span &times;
-            span [[header]]
+            span(class="editable" data-value="header") [[header]]
     div(class="creatives_strings_text-tab", ng-show="activeTab == 'texts'")
       div(class="creatives_string creatives_strings_text-input")
         textarea(rows="2", type="text", string-add, ng-blur="onBlur(text, $event)", ng-change="onChange(text)",
@@ -55,4 +56,4 @@ div(class="creatives_draggables")
             span(class="creatives_string-drag-handle") ☰
             span(class="creatives_item-remove", ng-click="texts.splice($index, 1)")
               span &times;
-            span [[text]]
+            span(class="editable" data-value="text") [[text]]
