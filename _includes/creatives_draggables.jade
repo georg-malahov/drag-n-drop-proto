@@ -30,7 +30,6 @@ div(class="creatives_draggables")
         div(class="creatives_image-wrapper",
           ng-repeat="src in images")
           span(class="creatives_item-remove", ng-click="images.splice($index, 1)")
-            span &times;
           div(class="creatives_image")
             img(ng-src="[[src]]")
     div(class="creatives_strings_header-tab", ng-show="activeTab == 'headers'")
@@ -43,7 +42,6 @@ div(class="creatives_draggables")
           div(class="creatives_string-inner")
             span(class="creatives_string-drag-handle") ☰
             span(class="creatives_item-remove", ng-click="headers.splice($index, 1)")
-              span &times;
             span(class="editable" data-value="header") [[header]]
     div(class="creatives_strings_text-tab", ng-show="activeTab == 'texts'")
       div(class="creatives_string creatives_strings_text-input")
@@ -55,5 +53,4 @@ div(class="creatives_draggables")
           div(class="creatives_string-inner")
             span(class="creatives_string-drag-handle") ☰
             span(class="creatives_item-remove", ng-click="texts.splice($index, 1)")
-              span &times;
             span(class="editable" data-value="text") [[text]]

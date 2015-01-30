@@ -14,7 +14,6 @@ div(class="creatives_ads")
     div(class="creatives_ready-ads-inner")
       div(class="creatives_ready-ad", ng-repeat="ad in readyAds track by $index")
         span(class="creatives_item-remove", ng-click="readyAds.splice($index, 1)")
-          span &times;
         div(class="creatives_ready-ad-inner")
           span(class="creatives_ready-ad-preview")
             img(src="img/view-icon.png")
